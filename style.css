@@ -108,7 +108,7 @@ form input:not(#type),
 form button {
     background: #423e3e;
     color: #fff;
-    width: 100;
+    width: 100%;
     padding: 10px;
     border: 1px solid #ddd;
     border-radius: 5px;
