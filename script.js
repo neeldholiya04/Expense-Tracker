@@ -15,6 +15,21 @@ const expense = document.getElementById("expense");
 
 form.addEventListener("submit", addTransaction);
 
+// function updateTotal() {
+//   const incomeTotal = transactions
+//     .filter((trx) => trx.type === "income")
+//     .reduce((total, trx) => total + trx.amount, 0);
+
+//   const expenseTotal = transactions
+//     .filter((trx) => trx.type === "expense")
+//     .reduce((total, trx) => total + trx.amount, 0);
+
+//   const balanceTotal = incomeTotal - expenseTotal;
+
+//   balance.textContent = formatter.format(balanceTotal).substring(1);
+//   income.textContent = formatter.format(incomeTotal);
+//   expense.textContent = formatter.format(expenseTotal * -1);
+// }
 function updateTotal() {
   const incomeTotal = transactions
     .filter((trx) => trx.type === "income")
@@ -26,11 +41,13 @@ function updateTotal() {
 
   const balanceTotal = incomeTotal - expenseTotal;
 
-  balance.textContent = formatter.format(balanceTotal).substring(1);
+  balance.textContent =
+    balanceTotal < 0
+      ? formatter.format(balanceTotal)
+      : formatter.format(balanceTotal).substring(1);
   income.textContent = formatter.format(incomeTotal);
   expense.textContent = formatter.format(expenseTotal * -1);
 }
-
 function renderList() {
   list.innerHTML = "";
 
@@ -78,18 +95,69 @@ function deleteTransaction(id) {
   renderList();
 }
 
+// function addTransaction(e) {
+//   e.preventDefault();
+
+//   const formData = new FormData(this);
+
+//   transactions.push({
+//     id: transactions.length + 1,
+//     name: formData.get("name"),
+//     amount: parseFloat(formData.get("amount")),
+//     date: new Date(formData.get("date")),
+//     type: "on" === formData.get("type") ? "income" : "expense",
+//   });
+
+//   this.reset();
+
+//   updateTotal();
+//   saveTransactions();
+//   renderList();
+// }
+
 function addTransaction(e) {
   e.preventDefault();
 
   const formData = new FormData(this);
+  const amount = parseFloat(formData.get("amount"));
+  const type = formData.get("type");
 
-  transactions.push({
-    id: transactions.length + 1,
-    name: formData.get("name"),
-    amount: parseFloat(formData.get("amount")),
-    date: new Date(formData.get("date")),
-    type: "on" === formData.get("type") ? "income" : "expense",
-  });
+  if (type === "on") {
+    // If it's an income, simply add it without any checks
+    transactions.push({
+      id: transactions.length + 1,
+      name: formData.get("name"),
+      amount: amount,
+      date: new Date(formData.get("date")),
+      type: "income",
+    });
+  } else {
+    const incomeTotal = transactions
+      .filter((trx) => trx.type === "income")
+      .reduce((total, trx) => total + trx.amount, 0);
+
+    const expenseTotal = transactions
+      .filter((trx) => trx.type === "expense")
+      .reduce((total, trx) => total + trx.amount, 0);
+
+    const balanceTotal = incomeTotal - expenseTotal - amount;
+
+    if (balanceTotal < 0) {
+      alert(
+        `Be careful! You are spending more than you are earning. You should cut down on your expenses. Your total loss is ${formatter.format(
+          balanceTotal
+        )}`
+      );
+    }
+
+    transactions.push({
+      id: transactions.length + 1,
+      name: formData.get("name"),
+      amount: amount,
+      date: new Date(formData.get("date")),
+      type: "expense",
+    });
+  }
 
   this.reset();
 
@@ -111,7 +179,7 @@ function setDefaultDate() {
   const day = ("0" + date.getDate()).slice(-2);
   const today = `${year}-${month}-${day}`;
 
-  document.getElementById('date').value = today;
+  document.getElementById("date").value = today;
 }
 
 setDefaultDate();
