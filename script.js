@@ -15,21 +15,6 @@ const expense = document.getElementById("expense");
 
 form.addEventListener("submit", addTransaction);
 
-// function updateTotal() {
-//   const incomeTotal = transactions
-//     .filter((trx) => trx.type === "income")
-//     .reduce((total, trx) => total + trx.amount, 0);
-
-//   const expenseTotal = transactions
-//     .filter((trx) => trx.type === "expense")
-//     .reduce((total, trx) => total + trx.amount, 0);
-
-//   const balanceTotal = incomeTotal - expenseTotal;
-
-//   balance.textContent = formatter.format(balanceTotal).substring(1);
-//   income.textContent = formatter.format(incomeTotal);
-//   expense.textContent = formatter.format(expenseTotal * -1);
-// }
 function updateTotal() {
   const incomeTotal = transactions
     .filter((trx) => trx.type === "income")
@@ -95,25 +80,6 @@ function deleteTransaction(id) {
   renderList();
 }
 
-// function addTransaction(e) {
-//   e.preventDefault();
-
-//   const formData = new FormData(this);
-
-//   transactions.push({
-//     id: transactions.length + 1,
-//     name: formData.get("name"),
-//     amount: parseFloat(formData.get("amount")),
-//     date: new Date(formData.get("date")),
-//     type: "on" === formData.get("type") ? "income" : "expense",
-//   });
-
-//   this.reset();
-
-//   updateTotal();
-//   saveTransactions();
-//   renderList();
-// }
 
 function addTransaction(e) {
   e.preventDefault();
@@ -123,7 +89,6 @@ function addTransaction(e) {
   const type = formData.get("type");
 
   if (type === "on") {
-    // If it's an income, simply add it without any checks
     transactions.push({
       id: transactions.length + 1,
       name: formData.get("name"),
@@ -142,13 +107,7 @@ function addTransaction(e) {
 
     const balanceTotal = incomeTotal - expenseTotal - amount;
 
-    if (balanceTotal < 0) {
-      alert(
-        `Be careful! You are spending more than you are earning. You should cut down on your expenses. Your total loss is ${formatter.format(
-          balanceTotal
-        )}`
-      );
-    }
+    
 
     transactions.push({
       id: transactions.length + 1,
