@@ -107,7 +107,13 @@ function addTransaction(e) {
 
     const balanceTotal = incomeTotal - expenseTotal - amount;
 
-    
+    if (balanceTotal < 0) {
+      alert(
+        `Be careful! You are spending more than you are earning. You should cut down on your expenses. Your total loss is ${formatter.format(
+          balanceTotal
+        )}`
+      );
+    }
 
     transactions.push({
       id: transactions.length + 1,
